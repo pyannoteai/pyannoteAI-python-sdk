@@ -1,0 +1,23 @@
+[project]
+name = "pyannoteAI"
+description = "Official pyannoteAI Python SDK"
+readme = "README.md"
+authors = [
+    { name = "Hervé BREDIN", email = "herve@pyannote.ai" }
+]
+requires-python = ">=3.10"
+
+dynamic = [
+  "version",
+]
+
+dependencies = [
+    "requests>=2.32.3",
+]
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"

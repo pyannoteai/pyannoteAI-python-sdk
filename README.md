@@ -3,7 +3,7 @@
 </p>
 
 <div align="center">
-    <h1>Official Python `pyannoteAI` SDK </h1>
+    <h1>Official Python pyannoteAI SDK </h1>
 </div>
 
 

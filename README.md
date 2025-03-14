@@ -3,14 +3,14 @@
 </p>
 
 <div align="center">
-    <h1>Official Python pyannoteAI SDK </h1>
+    <h1>Official pyannoteAI Python SDK </h1>
 </div>
 
 
 ## Installation
 
 ```bash
-$ pip install pyannoteAI
+$ pip install pyannoteai
 ```
 
 Then head over to [`dashboard.pyannote.ai`](https://dashboard.pyannote.ai) and create an API key.
@@ -24,8 +24,10 @@ client = Client("your-api-key")
 
 # upload conversation file
 media_url = client.upload('/path/to/conversation.wav')
+
 # submit a diarization job
 job_id = client.diarize(media_url)
+
 # retrieve diarization
 diarization = client.retrieve(job_id)
 # diarization['output']['diarization'] contains diarization output

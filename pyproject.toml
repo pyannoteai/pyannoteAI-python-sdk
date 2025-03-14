@@ -1,5 +1,5 @@
 [project]
-name = "pyannoteAI"
+name = "pyannoteai"
 description = "Official pyannoteAI Python SDK"
 readme = "README.md"
 authors = [

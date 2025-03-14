@@ -33,7 +33,7 @@ import requests
 from requests import Response
 from requests.exceptions import ConnectionError, HTTPError
 
-__version__ = importlib.metadata.version("pyannoteai")
+__version__ = importlib.metadata.version("pyannoteai-sdk")
 
 
 class PyannoteAIFailedJob(Exception):
@@ -96,7 +96,7 @@ class Client:
     -----
     
     # instantiate client for pyannoteAI web API
-    >>> from pyannoteai import Client
+    >>> from pyannoteai.sdk import Client
     >>> client = Client(token="{PYANNOTEAI_API_KEY}")
 
     # upload your audio file to the pyannoteAI web API

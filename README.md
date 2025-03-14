@@ -10,7 +10,7 @@
 ## Installation
 
 ```bash
-$ pip install pyannoteai
+$ pip install pyannoteai.sdk
 ```
 
 Then head over to [`dashboard.pyannote.ai`](https://dashboard.pyannote.ai) and create an API key.
@@ -19,7 +19,7 @@ Then head over to [`dashboard.pyannote.ai`](https://dashboard.pyannote.ai) and c
 
 ```python
 # instantiate client
-from pyannoteai import Client
+from pyannoteai.sdk import Client
 client = Client("your-api-key")
 
 # upload conversation file

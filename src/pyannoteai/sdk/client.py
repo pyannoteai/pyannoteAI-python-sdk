@@ -25,6 +25,7 @@ import importlib.metadata
 import io
 import os
 import time
+import warnings
 from pathlib import Path
 from typing import Callable, Optional, Union
 
@@ -32,7 +33,7 @@ import requests
 from requests import Response
 from requests.exceptions import ConnectionError, HTTPError
 
-__version__ = importlib.metadata.version("pyannoteAI")
+__version__ = importlib.metadata.version("pyannoteai-sdk")
 
 
 class PyannoteAIFailedJob(Exception):
@@ -47,7 +48,7 @@ class PyannoteAICanceledJob(Exception):
     pass
 
 
-class UploadingCallbackBytesIO(io.BytesIO):
+class _UploadingCallbackBytesIO(io.BytesIO):
     """BytesIO subclass that calls a callback during the upload process
 
     Parameters
@@ -93,8 +94,9 @@ class Client:
 
     Usage
     -----
+    
     # instantiate client for pyannoteAI web API
-    >>> from pyannoteAI import Client
+    >>> from pyannoteai.sdk import Client
     >>> client = Client(token="{PYANNOTEAI_API_KEY}")
 
     # upload your audio file to the pyannoteAI web API
@@ -204,8 +206,8 @@ or visit https://pyannote.openstatus.dev/ to check the status of the pyannoteAI 
         if not api_key:
             raise ValueError(
                 """
-        Failed to authenticate to pyannoteAI web API. Please create an API key on https://dashboard.pyannote.ai/ and
-        provide it either via `PYANNOTEAI_API_TOKEN` environment variable or with `token` parameter."""
+Failed to authenticate to pyannoteAI web API. Please create an API key on https://dashboard.pyannote.ai/ and
+provide it either via `PYANNOTEAI_API_TOKEN` environment variable or with `token` parameter."""
             )
 
         # store the API key and prepare the headers
@@ -285,9 +287,9 @@ or visit https://pyannote.openstatus.dev/ to check the status of the pyannoteAI 
 
         # for now, only str and Path audio instances are supported
         with open(audio, "rb") as f:
-            # wrap the file object in a UploadingCallbackBytesIO instance
+            # wrap the file object in a _UploadingCallbackBytesIO instance
             # to allow calling the hook during the upload process
-            data = UploadingCallbackBytesIO(callback, total_size, f.read())
+            data = _UploadingCallbackBytesIO(callback, total_size, f.read())
 
         if not (isinstance(media_url, str) and media_url.startswith("media://")):
             raise ValueError(
@@ -311,6 +313,11 @@ Please check your internet connection or visit https://pyannote.openstatus.dev/ 
 
         # TODO: handle HTTPError returned by the API
         response.raise_for_status()
+
+        warnings.warn("""
+You are using pyannoteAI's temporary storage solution. Your file will be permanently deleted from our servers within 24hs. 
+If you are running in production, we highly recommend to use your own storage to reduce network latency and obtain results faster. 
+Please check our documentation at https://docs.pyannote.ai/ for more information.""")
 
         return media_url
 
@@ -488,15 +495,16 @@ Please check your internet connection or visit https://pyannote.openstatus.dev/ 
             break
 
         if job_status == "failed":
-            error = job.get("output", dict()).get(
-                "error", "Please contact support."
-            )
+            error = job.get("output", dict()).get("error", "Please contact support.")
             raise PyannoteAIFailedJob(error, job_id)
 
         if job_status == "canceled":
-            error = job.get("output", dict()).get(
-                "error", "Please contact support."
-            )
+            error = job.get("output", dict()).get("error", "Please contact support.")
             raise PyannoteAICanceledJob(error, job_id)
+
+        warnings.warn("""
+You are using periodic polling to retrieve results. 
+If you are running in production, we highly recommend to setup a webhook server to obtain results faster, as soon as they are available. 
+Please check our documentation at https://docs.pyannote.ai/ for more information.""")
 
         return job

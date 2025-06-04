@@ -81,8 +81,7 @@ wheels = [
 ]
 
 [[package]]
-name = "pyannoteai"
-version = "0.1.dev0+d20250305"
+name = "pyannoteai-sdk"
 source = { editable = "." }
 dependencies = [
     { name = "requests" },

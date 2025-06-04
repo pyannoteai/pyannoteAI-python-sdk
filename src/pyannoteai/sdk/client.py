@@ -328,6 +328,7 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
         min_speakers: Optional[int] = None,
         max_speakers: Optional[int] = None,
         confidence: bool = False,
+        **kwargs,
     ) -> str:
         """Initiate a diarization job on the pyannoteAI web API
 
@@ -345,6 +346,8 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
             Not supported yet. Maximum number of speakers. Has no effect when `num_speakers` is provided.
         confidence : bool, optional
             Defaults to False
+        **kwargs : optional
+            Extra arguments to send in the body of the request.
 
         Returns
         -------
@@ -360,6 +363,8 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
         assert max_speakers is None, "`max_speakers` is not supported yet"
 
         json = {"url": media_url, "numSpeakers": num_speakers, "confidence": confidence}
+        # add extra arguments to the request body
+        json.update(kwargs)
 
         response = self._authenticated_post("/diarize", json=json)
         data = response.json()
@@ -368,6 +373,7 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
     def voiceprint(
         self,
         media_url: str,
+        **kwargs,
     ) -> str:
         """Initiate a voiceprint job on the pyannoteAI web API
 
@@ -376,6 +382,8 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
         media_url : str
             media://{...} URL created with the `upload` method or
             any other public URL pointing to an audio file.
+        **kwargs : optional
+            Extra arguments to send in the body of the request.
 
         Returns
         -------
@@ -388,6 +396,8 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
         """
 
         json = {"url": media_url}
+        # add extra arguments to the request body
+        json.update(kwargs)
 
         response = self._authenticated_post("/voiceprint", json=json)
         data = response.json()
@@ -403,6 +413,7 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
         min_speakers: Optional[int] = None,
         max_speakers: Optional[int] = None,
         confidence: bool = False,
+        **kwargs,
     ) -> str:
         """Initiate an identification job on the pyannoteAI web API
 
@@ -427,6 +438,8 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
             Not supported yet. Maximum number of speakers. Has no effect when `num_speakers` is provided.
         confidence : bool, optional
             Defaults to False
+        **kwargs : optional
+            Extra arguments to send in the body of the request.
 
         Returns
         -------
@@ -454,6 +467,8 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
                 "threshold": matching_threshold,
             },
         }
+        # add extra arguments to the request body
+        json.update(kwargs)
 
         response = self._authenticated_post("/identify", json=json)
         data = response.json()

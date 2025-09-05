@@ -331,6 +331,7 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
         turn_level_confidence: bool = False,
         exclusive: bool = False,
         model: str = "precision-2",
+        **kwargs,
     ) -> str:
         """Initiate a diarization job on the pyannoteAI web API
 
@@ -354,6 +355,8 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
             Defaults to False
         exclusive: bool, optional
             Defaults to False
+        **kwargs : optional
+            Extra arguments to send in the body of the request.
 
         Returns
         -------
@@ -375,6 +378,8 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
             "turn_level_confidence": turn_level_confidence,
             "exclusive": exclusive,
         }
+        # add extra arguments to the request body
+        json.update(kwargs)
 
         response = self._authenticated_post("/diarize", json=json)
         data = response.json()
@@ -384,6 +389,7 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
         self,
         media_url: str,
         model: str = "precision-2",
+        **kwargs,
     ) -> str:
         """Initiate a voiceprint job on the pyannoteAI web API
 
@@ -394,6 +400,8 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
             any other public URL pointing to an audio file.
         model : str, optional
             Defaults to "precision-2".
+        **kwargs : optional
+            Extra arguments to send in the body of the request.
 
         Returns
         -------
@@ -406,6 +414,8 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
         """
 
         json = {"url": media_url, "model": model}
+        # add extra arguments to the request body
+        json.update(kwargs)
 
         response = self._authenticated_post("/voiceprint", json=json)
         data = response.json()
@@ -424,6 +434,7 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
         confidence: bool = False,
         turn_level_confidence: bool = False,
         exclusive: bool = False,
+        **kwargs,
     ) -> str:
         """Initiate an identification job on the pyannoteAI web API
 
@@ -450,6 +461,8 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
             Maximum number of speakers. Has no effect when `num_speakers` is provided.
         confidence : bool, optional
             Defaults to False
+        **kwargs : optional
+            Extra arguments to send in the body of the request.
 
         Returns
         -------
@@ -479,6 +492,8 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
                 "threshold": matching_threshold,
             },
         }
+        # add extra arguments to the request body
+        json.update(kwargs)
 
         response = self._authenticated_post("/identify", json=json)
         data = response.json()

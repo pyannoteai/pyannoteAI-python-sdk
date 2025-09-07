@@ -340,21 +340,21 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
         media_url : str
             media://{...} URL created with the `upload` method or
             any other public URL pointing to an audio file.
-        model : str, optional
-            Defaults to "precision-2"
         num_speakers : int, optional
             Force number of speakers to diarize. If not provided, the
             number of speakers will be determined automatically.
         min_speakers : int, optional
-            Minimum number of speakers. Has no effect when `num_speakers` is provided.
+            Minimum number of speakers.
         max_speakers : int, optional
-            Maximum number of speakers. Has no effect when `num_speakers` is provided.
+            Maximum number of speakers.
         confidence : bool, optional
-            Defaults to False
+            Enable confidence scores.
         turn_level_confidence: bool, optional
-            Defaults to False
+            Enable turn-based confidence scores.
         exclusive: bool, optional
-            Defaults to False
+            Enable exclusive speaker diarization.
+        model : str, optional
+            Defaults to "precision-2"
         **kwargs : optional
             Extra arguments to send in the body of the request.
 
@@ -425,7 +425,6 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
         self,
         media_url: str,
         voiceprints: dict[str, str],
-        model: str = "precision-2",
         exclusive_matching: bool = True,
         matching_threshold: float = 0.0,
         num_speakers: int | None = None,
@@ -434,6 +433,7 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
         confidence: bool = False,
         turn_level_confidence: bool = False,
         exclusive: bool = False,
+        model: str = "precision-2",
         **kwargs,
     ) -> str:
         """Initiate an identification job on the pyannoteAI web API
@@ -444,8 +444,7 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
             media://{...} URL created with the `upload` method or
             any other public URL pointing to an audio file.
         voiceprints : dict
-        model : str, optional
-            Defaults to "precision-2".
+            Voiceprints.
         exclusive_matching : bool, optional
             Prevent multiple speakers from being matched to the same voiceprint.
             Defaults to True.
@@ -456,11 +455,17 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
             Force number of speakers to diarize. If not provided, the
             number of speakers will be determined automatically.
         min_speakers : int, optional
-            Minimum number of speakers. Has no effect when `num_speakers` is provided.
+            Minimum number of speakers.
         max_speakers : int, optional
-            Maximum number of speakers. Has no effect when `num_speakers` is provided.
+            Maximum number of speakers.
         confidence : bool, optional
-            Defaults to False
+            Enable confidence scores.
+        turn_level_confidence: bool, optional
+            Enable turn-based confidence scores.
+        exclusive: bool, optional
+            Enable exclusive speaker diarization.
+        model : str, optional
+            Defaults to "precision-2"
         **kwargs : optional
             Extra arguments to send in the body of the request.
 

@@ -251,7 +251,7 @@ provide it either via `PYANNOTEAI_API_TOKEN` environment variable or with `token
 
     def upload(
         self,
-        audio: str | Path,
+        audio: str | Path | dict[str, str|Path],
         media_url: Optional[str] = None,
         callback: Optional[Callable] = None,
     ) -> str:
@@ -259,8 +259,9 @@ provide it either via `PYANNOTEAI_API_TOKEN` environment variable or with `token
 
         Parameters
         ----------
-        audio : str or Path
-            Audio file to be uploaded. Can be a "str" or "Path" instance: "audio.wav" or Path("audio.wav")
+        audio : str or Path or dict
+            Path to audio file to be uploaded. Can be a "str" or "Path" instance, or a dict with an
+            "audio" key (e.g. {"audio": "/path/to/audio.wav"}).
         media_url : str, optional
             Unique identifier used to retrieve the uploaded audio file on the pyannoteAI platform.
             Any combination of letters {a-z, A-Z}, digits {0-9}, and {-./} characters prefixed
@@ -277,6 +278,13 @@ provide it either via `PYANNOTEAI_API_TOKEN` environment variable or with `token
             Same as the input `media_url` parameter when provided,
             or "media://{md5-hash-of-audio-file}" otherwise.
         """
+
+        if isinstance(audio, dict):
+            if "audio" not in audio:
+                raise ValueError(
+                    "When `audio` is a dict, it must provide the path to the audio file in 'audio' key."
+                )
+            audio = audio["audio"]
 
         # get the total size of the file to upload
         # to provide progress information to the hook

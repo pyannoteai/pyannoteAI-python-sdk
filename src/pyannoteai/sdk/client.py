@@ -375,7 +375,7 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
             "minSpeakers": min_speakers,
             "maxSpeakers": max_speakers,
             "confidence": confidence,
-            "turn_level_confidence": turn_level_confidence,
+            "turnLevelConfidence": turn_level_confidence,
             "exclusive": exclusive,
         }
         # add extra arguments to the request body
@@ -481,7 +481,7 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
             "minSpeakers": min_speakers,
             "maxSpeakers": max_speakers,
             "confidence": confidence,
-            "turn_level_confidence": turn_level_confidence,
+            "turnLevelConfidence": turn_level_confidence,
             "exclusive": exclusive,
             "voiceprints": [
                 {"label": speaker, "voiceprint": voiceprint}

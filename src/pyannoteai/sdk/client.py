@@ -94,7 +94,7 @@ class Client:
 
     Usage
     -----
-    
+
     # instantiate client for pyannoteAI web API
     >>> from pyannoteai.sdk import Client
     >>> client = Client(token="{PYANNOTEAI_API_KEY}")
@@ -251,7 +251,7 @@ provide it either via `PYANNOTEAI_API_TOKEN` environment variable or with `token
 
     def upload(
         self,
-        audio: str | Path,
+        audio: str | Path | dict[str, str|Path],
         media_url: Optional[str] = None,
         callback: Optional[Callable] = None,
     ) -> str:
@@ -259,8 +259,9 @@ provide it either via `PYANNOTEAI_API_TOKEN` environment variable or with `token
 
         Parameters
         ----------
-        audio : str or Path
-            Audio file to be uploaded. Can be a "str" or "Path" instance: "audio.wav" or Path("audio.wav")
+        audio : str or Path or dict
+            Path to audio file to be uploaded. Can be a "str" or "Path" instance, or a dict with an
+            "audio" key (e.g. {"audio": "/path/to/audio.wav"}).
         media_url : str, optional
             Unique identifier used to retrieve the uploaded audio file on the pyannoteAI platform.
             Any combination of letters {a-z, A-Z}, digits {0-9}, and {-./} characters prefixed
@@ -277,6 +278,13 @@ provide it either via `PYANNOTEAI_API_TOKEN` environment variable or with `token
             Same as the input `media_url` parameter when provided,
             or "media://{md5-hash-of-audio-file}" otherwise.
         """
+
+        if isinstance(audio, dict):
+            if "audio" not in audio:
+                raise ValueError(
+                    "When `audio` is a dict, it must provide the path to the audio file in 'audio' key."
+                )
+            audio = audio["audio"]
 
         # get the total size of the file to upload
         # to provide progress information to the hook
@@ -324,10 +332,13 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
     def diarize(
         self,
         media_url: str,
-        num_speakers: Optional[int] = None,
-        min_speakers: Optional[int] = None,
-        max_speakers: Optional[int] = None,
+        num_speakers: int | None = None,
+        min_speakers: int | None = None,
+        max_speakers: int | None = None,
         confidence: bool = False,
+        turn_level_confidence: bool = False,
+        exclusive: bool = False,
+        model: str = "precision-2",
         **kwargs,
     ) -> str:
         """Initiate a diarization job on the pyannoteAI web API
@@ -341,11 +352,17 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
             Force number of speakers to diarize. If not provided, the
             number of speakers will be determined automatically.
         min_speakers : int, optional
-            Not supported yet. Minimum number of speakers. Has no effect when `num_speakers` is provided.
+            Minimum number of speakers.
         max_speakers : int, optional
-            Not supported yet. Maximum number of speakers. Has no effect when `num_speakers` is provided.
+            Maximum number of speakers.
         confidence : bool, optional
-            Defaults to False
+            Enable confidence scores.
+        turn_level_confidence: bool, optional
+            Enable turn-based confidence scores.
+        exclusive: bool, optional
+            Enable exclusive speaker diarization.
+        model : str, optional
+            Defaults to "precision-2"
         **kwargs : optional
             Extra arguments to send in the body of the request.
 
@@ -359,10 +376,16 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
             If something else went wrong
         """
 
-        assert min_speakers is None, "`min_speakers` is not supported yet"
-        assert max_speakers is None, "`max_speakers` is not supported yet"
-
-        json = {"url": media_url, "numSpeakers": num_speakers, "confidence": confidence}
+        json = {
+            "url": media_url,
+            "model": model,
+            "numSpeakers": num_speakers,
+            "minSpeakers": min_speakers,
+            "maxSpeakers": max_speakers,
+            "confidence": confidence,
+            "turnLevelConfidence": turn_level_confidence,
+            "exclusive": exclusive,
+        }
         # add extra arguments to the request body
         json.update(kwargs)
 
@@ -373,6 +396,7 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
     def voiceprint(
         self,
         media_url: str,
+        model: str = "precision-2",
         **kwargs,
     ) -> str:
         """Initiate a voiceprint job on the pyannoteAI web API
@@ -382,6 +406,8 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
         media_url : str
             media://{...} URL created with the `upload` method or
             any other public URL pointing to an audio file.
+        model : str, optional
+            Defaults to "precision-2".
         **kwargs : optional
             Extra arguments to send in the body of the request.
 
@@ -395,7 +421,7 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
             If something else went wrong
         """
 
-        json = {"url": media_url}
+        json = {"url": media_url, "model": model}
         # add extra arguments to the request body
         json.update(kwargs)
 
@@ -409,10 +435,13 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
         voiceprints: dict[str, str],
         exclusive_matching: bool = True,
         matching_threshold: float = 0.0,
-        num_speakers: Optional[int] = None,
-        min_speakers: Optional[int] = None,
-        max_speakers: Optional[int] = None,
+        num_speakers: int | None = None,
+        min_speakers: int | None = None,
+        max_speakers: int | None = None,
         confidence: bool = False,
+        turn_level_confidence: bool = False,
+        exclusive: bool = False,
+        model: str = "precision-2",
         **kwargs,
     ) -> str:
         """Initiate an identification job on the pyannoteAI web API
@@ -423,6 +452,7 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
             media://{...} URL created with the `upload` method or
             any other public URL pointing to an audio file.
         voiceprints : dict
+            Voiceprints.
         exclusive_matching : bool, optional
             Prevent multiple speakers from being matched to the same voiceprint.
             Defaults to True.
@@ -433,11 +463,17 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
             Force number of speakers to diarize. If not provided, the
             number of speakers will be determined automatically.
         min_speakers : int, optional
-            Not supported yet. Minimum number of speakers. Has no effect when `num_speakers` is provided.
+            Minimum number of speakers.
         max_speakers : int, optional
-            Not supported yet. Maximum number of speakers. Has no effect when `num_speakers` is provided.
+            Maximum number of speakers.
         confidence : bool, optional
-            Defaults to False
+            Enable confidence scores.
+        turn_level_confidence: bool, optional
+            Enable turn-based confidence scores.
+        exclusive: bool, optional
+            Enable exclusive speaker diarization.
+        model : str, optional
+            Defaults to "precision-2"
         **kwargs : optional
             Extra arguments to send in the body of the request.
 
@@ -451,17 +487,19 @@ Please check our documentation at https://docs.pyannote.ai/ for more information
             If something else went wrong
         """
 
-        assert min_speakers is None, "`min_speakers` is not supported yet"
-        assert max_speakers is None, "`max_speakers` is not supported yet"
-
         json = {
             "url": media_url,
+            "model": model,
+            "numSpeakers": num_speakers,
+            "minSpeakers": min_speakers,
+            "maxSpeakers": max_speakers,
+            "confidence": confidence,
+            "turnLevelConfidence": turn_level_confidence,
+            "exclusive": exclusive,
             "voiceprints": [
                 {"label": speaker, "voiceprint": voiceprint}
                 for speaker, voiceprint in voiceprints.items()
             ],
-            "numSpeakers": num_speakers,
-            # "confidence": confidence,
             "matching": {
                 "exclusive": exclusive_matching,
                 "threshold": matching_threshold,

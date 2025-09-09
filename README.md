@@ -6,16 +6,15 @@
     <h1>Official pyannoteAI Python SDK </h1>
 </div>
 
-
 ## Installation
 
 ```bash
-$ pip install pyannoteai.sdk
+$ pip install pyannoteai-sdk
 ```
 
 Then head over to [`dashboard.pyannote.ai`](https://dashboard.pyannote.ai) and create an API key.
 
-## Speaker diarization 
+## Speaker diarization
 
 ```python
 # instantiate client

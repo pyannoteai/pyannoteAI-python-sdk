@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## develop
+## Version 0.2.0 (2025-09-09)
 
 - Add support for `Precision-2` model
 

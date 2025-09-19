@@ -90,7 +90,7 @@ class Client:
     ----------
     token : str, optional
         pyannoteAI API key created from https://dashboard.pyannote.ai.
-        Defaults to using `PYANNOTEAI_API_TOKEN` environment variable.
+        Defaults to using `PYANNOTEAI_API_KEY` environment variable.
 
     Usage
     -----
@@ -123,7 +123,7 @@ class Client:
             raise HTTPError(
                 """
 Failed to authenticate to pyannoteAI API. Please create an API key on https://dashboard.pyannote.ai/ and
-provide it either via `PYANNOTEAI_API_TOKEN` environment variable or with `token` parameter."""
+provide it either via `PYANNOTEAI_API_KEY` environment variable or with `token` parameter."""
             )
 
         # TODO: add support for other status code when
@@ -207,7 +207,7 @@ or visit https://pyannote.openstatus.dev/ to check the status of the pyannoteAI 
             raise ValueError(
                 """
 Failed to authenticate to pyannoteAI web API. Please create an API key on https://dashboard.pyannote.ai/ and
-provide it either via `PYANNOTEAI_API_TOKEN` environment variable or with `token` parameter."""
+provide it either via `PYANNOTEAI_API_KEY` environment variable or with `token` parameter."""
             )
 
         # store the API key and prepare the headers
